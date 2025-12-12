@@ -51,6 +51,8 @@ mongodb+srv://dnd-user:yourpassword@cluster0.xxxxx.mongodb.net/vibecoding?retryW
 
 ## Step 2: Deploy Backend to Railway
 
+**Note:** For monorepo setup details, see [RAILWAY_SETUP.md](./RAILWAY_SETUP.md)
+
 ### 2.1 Prepare Backend
 1. Make sure your backend has a build script:
    ```bash
@@ -58,13 +60,15 @@ mongodb+srv://dnd-user:yourpassword@cluster0.xxxxx.mongodb.net/vibecoding?retryW
    npm run build
    ```
 
-### 2.2 Deploy to Railway
+### 2.2 Deploy Backend to Railway
 1. Go to [Railway.app](https://railway.app)
 2. Sign up/Login with GitHub
 3. Click "New Project"
 4. Choose "Deploy from GitHub repo"
 5. Select your repository
-6. Railway will auto-detect and deploy
+6. Configure service:
+   - **Root Directory:** `apps/backend`
+   - Railway will use the `railway.toml` config automatically
 
 ### 2.3 Set Environment Variables
 1. In Railway dashboard, click on your service
