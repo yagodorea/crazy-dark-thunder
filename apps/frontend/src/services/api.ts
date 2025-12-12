@@ -1,0 +1,56 @@
+import axios from 'axios';
+import type { Character, ClassInfo, RaceInfo, BackgroundInfo } from '../types/character';
+
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
+
+const api = axios.create({
+  baseURL: API_BASE_URL,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
+export const dataAPI = {
+  getClasses: async (): Promise<ClassInfo[]> => {
+    const response = await api.get('/data/classes');
+    return response.data;
+  },
+
+  getRaces: async (): Promise<RaceInfo[]> => {
+    const response = await api.get('/data/races');
+    return response.data;
+  },
+
+  getBackgrounds: async (): Promise<BackgroundInfo[]> => {
+    const response = await api.get('/data/backgrounds');
+    return response.data;
+  },
+};
+
+export const characterAPI = {
+  getAll: async (): Promise<Character[]> => {
+    const response = await api.get('/characters');
+    return response.data;
+  },
+
+  getById: async (id: string): Promise<Character> => {
+    const response = await api.get(`/characters/${id}`);
+    return response.data;
+  },
+
+  create: async (character: Omit<Character, 'characterId' | 'createdAt' | 'updatedAt'>): Promise<Character> => {
+    const response = await api.post('/characters', character);
+    return response.data;
+  },
+
+  update: async (id: string, character: Partial<Character>): Promise<Character> => {
+    const response = await api.put(`/characters/${id}`, character);
+    return response.data;
+  },
+
+  delete: async (id: string): Promise<void> => {
+    await api.delete(`/characters/${id}`);
+  },
+};
+
+export default api;
