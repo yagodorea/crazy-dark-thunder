@@ -70,4 +70,5 @@ app.use('/api/characters', validateApiKey, characterRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
+  console.log(`API_KEYS = ${process.env.API_KEYS}`)
 });
