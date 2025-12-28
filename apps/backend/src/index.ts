@@ -35,7 +35,7 @@ app.use(cors({
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'X-Api-Key'],
   exposedHeaders: ['Content-Length', 'X-Request-Id']
 }));
 
@@ -70,5 +70,4 @@ app.use('/api/characters', validateApiKey, characterRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
-  console.log(`API_KEYS = ${process.env.API_KEYS}`)
 });
