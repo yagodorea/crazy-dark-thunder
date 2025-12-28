@@ -2,6 +2,7 @@ import axios from 'axios';
 import type { Character, ClassInfo, RaceInfo, BackgroundInfo } from '../types/character';
 
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5001/api';
+const STORAGE_KEY = 'dnd-api-key';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -9,6 +10,27 @@ const api = axios.create({
     'Content-Type': 'application/json',
   },
 });
+
+// Add API key to all requests
+api.interceptors.request.use((config) => {
+  const apiKey = localStorage.getItem(STORAGE_KEY);
+  if (apiKey) {
+    config.headers['X-API-Key'] = apiKey;
+  }
+  return config;
+});
+
+// Handle 401 responses by clearing auth
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      localStorage.removeItem(STORAGE_KEY);
+      window.location.reload();
+    }
+    return Promise.reject(error);
+  }
+);
 
 export const dataAPI = {
   getClasses: async (): Promise<ClassInfo[]> => {

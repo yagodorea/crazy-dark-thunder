@@ -5,6 +5,7 @@ import { connectDB } from './config/database.js';
 import userRoutes from './routes/userRoutes.js';
 import dataRoutes from './routes/dataRoutes.js';
 import characterRoutes from './routes/characterRoutes.js';
+import { validateApiKey, checkApiKey } from './middleware/apiKeyAuth.js';
 
 dotenv.config();
 
@@ -49,9 +50,23 @@ app.get('/', (_req: Request, res: Response) => {
   res.json({ message: 'Welcome to Vibe Coding D&D Character Creator API' });
 });
 
-app.use('/api/users', userRoutes);
-app.use('/api/data', dataRoutes);
-app.use('/api/characters', characterRoutes);
+// Auth endpoint - validates API key without protecting itself
+app.post('/api/auth/validate', (req: Request, res: Response) => {
+  const { apiKey } = req.body;
+
+  if (!apiKey) {
+    res.status(400).json({ valid: false, error: 'API key required' });
+    return;
+  }
+
+  const valid = checkApiKey(apiKey);
+  res.json({ valid });
+});
+
+// Protected routes
+app.use('/api/users', validateApiKey, userRoutes);
+app.use('/api/data', validateApiKey, dataRoutes);
+app.use('/api/characters', validateApiKey, characterRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
