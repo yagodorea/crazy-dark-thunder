@@ -4,7 +4,7 @@ This guide will help you deploy your D&D Character Creator to production.
 
 ## Overview
 
-- **Frontend:** Vercel
+- **Frontend:** GitHub Pages (via GitHub Actions)
 - **Backend:** Railway (or Render)
 - **Database:** MongoDB Atlas
 
@@ -87,37 +87,26 @@ mongodb+srv://dnd-user:yourpassword@cluster0.xxxxx.mongodb.net/vibecoding?retryW
 
 ---
 
-## Step 3: Deploy Frontend to Vercel
+## Step 3: Deploy Frontend to GitHub Pages
 
-### 3.1 Prepare Frontend
-1. Update API URL for production:
-   - Create `apps/frontend/.env.production`:
-   ```
-   VITE_API_URL=https://your-backend-url.railway.app/api
-   ```
+The frontend automatically deploys to GitHub Pages via GitHub Actions when you push to the `main` branch.
 
-### 3.2 Deploy to Vercel
-1. Go to [Vercel](https://vercel.com)
-2. Sign up/Login with GitHub
-3. Click "Add New Project"
-4. Import your GitHub repository
-5. Configure:
-   - **Framework Preset:** Vite
-   - **Root Directory:** `apps/frontend`
-   - **Build Command:** `npm run build`
-   - **Output Directory:** `dist`
+### 3.1 Enable GitHub Pages
+1. Go to your repository on GitHub
+2. Settings → Pages
+3. Source: **GitHub Actions**
 
-### 3.3 Set Environment Variables
-1. In Vercel project settings → Environment Variables
-2. Add:
-   ```
-   VITE_API_URL=https://your-backend-url.railway.app/api
-   ```
+### 3.2 Set Environment Variables
+1. Go to Settings → Secrets and variables → Actions → Variables
+2. Add a new repository variable:
+   - **Name:** `VITE_API_URL`
+   - **Value:** `https://your-backend-url.railway.app/api`
 
-### 3.4 Deploy
-1. Click "Deploy"
-2. Wait for deployment to complete
-3. Visit your live site!
+### 3.3 Deploy
+1. Push changes to the `main` branch
+2. The GitHub Action will automatically build and deploy
+3. Check the Actions tab for deployment status
+4. Your site will be available at `https://<username>.github.io/<repo-name>/`
 
 ---
 
@@ -151,7 +140,7 @@ NODE_ENV=production
 
 ## Step 4: Test Your Deployment
 
-1. Visit your frontend URL (from Vercel)
+1. Visit your frontend URL (from GitHub Pages)
 2. Try creating a character
 3. Check that data saves to MongoDB Atlas
 4. Verify character list loads properly
@@ -166,7 +155,7 @@ Make sure backend CORS allows your frontend domain. Update `apps/backend/src/ind
 app.use(cors({
   origin: [
     'http://localhost:5173',
-    'https://your-frontend.vercel.app'
+    'https://<username>.github.io'
   ],
   // ... rest of config
 }));
@@ -182,6 +171,11 @@ app.use(cors({
 - Verify all dependencies are in package.json
 - Check build logs for specific errors
 
+### SPA Routing Issues on GitHub Pages
+The app includes a 404.html redirect to handle client-side routing. If routes aren't working:
+- Verify `public/404.html` exists
+- Check that `main.tsx` has the redirect handling code
+
 ---
 
 ## Quick Deploy Checklist
@@ -192,8 +186,9 @@ app.use(cors({
 - [ ] Backend deployed to Railway/Render
 - [ ] Backend environment variables set
 - [ ] Backend URL obtained
-- [ ] Frontend environment variable updated
-- [ ] Frontend deployed to Vercel
+- [ ] GitHub Pages enabled (Source: GitHub Actions)
+- [ ] `VITE_API_URL` variable set in GitHub repo
+- [ ] Push to main branch to trigger deployment
 - [ ] Test character creation works
 - [ ] Test character list loads
 
@@ -203,7 +198,7 @@ app.use(cors({
 
 - **MongoDB Atlas:** Free tier (512 MB storage)
 - **Railway:** Free tier ($5 credit/month, then $0.000463/GB-hour)
-- **Vercel:** Free tier (hobby projects)
+- **GitHub Pages:** Free for public repositories
 - **Render:** Free tier (services spin down after 15min inactivity)
 
 **Note:** Railway's free tier may require credit card after trial. Consider Render's free tier as alternative.
@@ -212,10 +207,11 @@ app.use(cors({
 
 ## Custom Domains (Optional)
 
-### Vercel
-1. Project Settings → Domains
+### GitHub Pages
+1. Repository Settings → Pages → Custom domain
 2. Add your custom domain
-3. Follow DNS configuration instructions
+3. Configure DNS records as shown
+4. Optionally enable "Enforce HTTPS"
 
 ### Railway/Render
 1. Service Settings → Domains
@@ -226,9 +222,9 @@ app.use(cors({
 
 ## Updates & Redeployment
 
-### Frontend (Vercel)
-- Automatically redeploys on git push to main branch
-- Or manually redeploy from Vercel dashboard
+### Frontend (GitHub Pages)
+- Automatically redeploys on git push to main branch (if `apps/frontend/**` changed)
+- Or manually trigger from Actions tab → Deploy Frontend → Run workflow
 
 ### Backend (Railway/Render)
 - Automatically redeploys on git push to main branch

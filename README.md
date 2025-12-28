@@ -2,11 +2,9 @@
 
 A monorepo application with a Vite React frontend and MongoDB-based Express backend for creating D&D 5e characters.
 
-## 🚀 Quick Deploy
+## 🚀 Deployment
 
-[![Deploy to Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/yourusername/vibecoding)
-
-See [DEPLOYMENT.md](./DEPLOYMENT.md) for complete deployment instructions.
+The frontend deploys automatically to GitHub Pages on push to `main`. See [DEPLOYMENT.md](./DEPLOYMENT.md) for complete deployment instructions.
 
 ## Project Structure
 
